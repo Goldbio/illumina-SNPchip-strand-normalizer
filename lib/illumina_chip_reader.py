@@ -1,4 +1,4 @@
-import sys, re 
+import sys, re , string
 
 
 class illuminaSNPChip:
@@ -28,6 +28,7 @@ class illuminaSNPChip:
 						  if len( snp ) < 8 :
 							  continue
 
+						  probeID = snp[3]
 						  match = re.search(r"rs\d+", snp[3] )
 						  if match :
 							  rsid=match.group(0)
@@ -36,6 +37,8 @@ class illuminaSNPChip:
 
 						  if key_type == 'chr-pos':
 							  key = snp[1]+'-'+snp[2]	
+						  elif key_type =='probe':
+						     key = probeID
 						  elif key_type == 'rsid':
 							  if not rsid:
 								  continue
@@ -50,6 +53,7 @@ class illuminaSNPChip:
 						  self.chip[  key ].setdefault( 'rsid' ,  key  )
 						  self.chip[  key ].setdefault( 'chr' , snp[1] )
 						  self.chip[  key ].setdefault( 'pos' , snp[2] )
+						  self.chip[  key ].setdefault( 'probeID' , probeID )
 
 
 		   elif re.search( '23andMe', firstLine ):
@@ -91,6 +95,9 @@ class illuminaSNPChip:
 
 	def getKeys( self ):
 		return self.chip.keys()
+	
+	def getProbeID( self, key ):
+		return self.chip[key]['probeID']
 
 	def getChr( self, key ):
 		return  self.chip[key]['chr'] 
@@ -106,12 +113,11 @@ class illuminaSNPChip:
 	
 	def getGenotype( self, key):
 		return self.chip[key]['genotype']
+	
+	def getTranslatedGenotype( self, key ):
+		return self.chip[key]['genotype'].translate( string.maketrans('ATGC','TACG'))
 
 	
-	def getHGversion(self ):
-		return
-	
-
 	def hasKey( self, key ):
 		return key in self.chip
 	

@@ -9,9 +9,11 @@ based on each illumina SNP chip's manifest file.
 
 
 
-### Usage 
+### Exam usage 
 
-Print strandness of all probes in input SNP chip manifest file 
+If you want to print strandness of all probes in SNP chips, first download manifest file for SNP chips of your interest from http://support.illumina.com/array/downloads.html. Download Manifest file(CSV format) under 'Product files' section of the SNP chip of your interest.
+
+When you prepare manifest file, use this library to print out strandness of all probes as exam codes below. 
 
 ```python
 	

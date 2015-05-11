@@ -9,3 +9,18 @@ based on each illumina SNP chip's manifest file.
 
 
 
+### Usage 
+
+Print strandness of all probes in input SNP chip manifest file 
+
+```python
+	
+from illumina_SNPchip_strand_normalizer import *
+
+manifest = illuminaSNPmanifest( 'manifest file path' )
+
+for probeID in manifest.getProbeID():
+	print probeID, strand = manifest.getStrand( probeID )
+
+
+```

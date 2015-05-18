@@ -25,7 +25,7 @@ class illuminaSNPChip:
 					  data=data[1].split('\n')
 					  for row in data[2:]:
 						  snp= row.strip().split('\t')
-						  if len( snp ) < 8 :
+						  if len( snp ) < 5 :
 							  continue
 
 						  probeID = snp[3]
@@ -47,6 +47,7 @@ class illuminaSNPChip:
 
 
 						  genotype = ''.join(  sorted( snp[4:6] ) )
+
 						  	
 						  	
 						  self.chip.setdefault( key, { 'genotype': genotype })
@@ -142,61 +143,3 @@ class illuminaSNPChip:
 		return
 	
 
-
-def read23andMe( filename , key_type ):
-   ''' 
-      Read 23andMe's raw data 
-   '''
-   data={}
-   with open( filename) as f:
-      for line in f:
-         if not re.search( '^#', line ):
-				snp = line.split('\t')
-				if key_type == 'chr_pos': 
-					data[ snp[1].strip() +'-'+snp[2].strip() ]  =snp[3].strip()
-				else:
-					data[ snp[0] ] = snp[3].strip()
-   return data
-
-
-
-def readMacrogen( filename , key_type ):
-   ''' 
-      Read Macrogen's chip raw data 
-   '''
-   data={}
-   with open( filename ) as f:  
-      f = f.read().split('[Data]')
-      content = f[1].split('\n')
-      for line in content[2:]:
-         snp=line.split('\t')
-         if len(snp) < 8:
-            continue
-				
-         genotype = ''.join( snp[4:6] )
-         if key_type == 'chr_pos':
-         	data[ snp[1].strip()+'-'+snp[2].strip() ] = genotype
-	
-         else:
-				match = re.search(r"rs\d+", snp[3] )
-				if match :
-					data[  match.group(0) ] =  genotype
-
-
-   return data 
-
-
-def checkIfMacrogenChip( filepath ):
-   with open( filepath) as f:
-      if re.search( '\[Header\]', f.readline() ):
-         return 1
-      else:
-         return 0
-
-
-def readChip( filepath , key_type ):
-	if checkIfMacrogenChip( filepath ):
-		return readMacrogen( filepath, key_type) 
-
-	else:
-		return read23andMe( filepath, key_type )
